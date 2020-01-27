@@ -1,0 +1,29 @@
+- name: Download the file
+  azure_rm_storageblob:
+    resource_group: StorageforBLOB
+    storage_account_name: letscreateone
+    container: letscreateone
+    blob: CM.txt
+    src: ~/tmp/CM.txt
+	
+	
+	
+	- name: GET Config
+  ios_command:
+   commands:
+     - show startup
+  register: output
+- debug:
+    msg: "{{ output.stdout[0] }}"
+- copy:
+    content: "{{ output.stdout[0] }}"
+    dest: "/etc/ansible/{{ inventory_hostname }}.txt"
+
+- name: Upload the file
+  azure_rm_storageblob:
+    resource_group: StorageforBLOB
+    storage_account_name: blobstorageuses12
+    container: letscreateone
+    blob: "{{ inventory_hostname }}.txt"
+    src: "{{ inventory_hostname }}.txt"
+

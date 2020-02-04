@@ -1,0 +1,18 @@
+---
+- name: BACKUP THE CONFIG
+  ios_command:
+    commands: show runn | se bgp
+  register: config_output
+
+#- debug:
+    #msg: "config_output"
+
+- copy:
+    content: "{{ config_output.stdout[0] }}"
+    dest: /tmp/running.txt
+
+- name: check the difference
+  ios_config:
+    diff_against: intended
+    intended_config: "{{ lookup('file', '/tmp/running.txt') }}"
+[VMODORCH@7777202VSORCH ansible]$
